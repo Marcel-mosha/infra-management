@@ -241,7 +241,7 @@ class MaintenanceRequest(models.Model):
     completed_at = models.DateTimeField(null=True, blank=True)
     
     class Meta:
-        ordering = ['-priority', 'block', 'room']
+        ordering = ['-created_at']
         verbose_name = "Maintenance Request"
         verbose_name_plural = "Maintenance Requests"
         
