@@ -293,14 +293,21 @@ class EquipmentCategoryAdmin(admin.ModelAdmin):
 @admin.register(Equipment, site=custom_admin_site)
 class EquipmentAdmin(admin.ModelAdmin):
     list_display = ['name', 'room_location', 'category', 'status', 'last_maintenance']
-    list_filter = ['category', 'status', 'room__block']
+    list_filter = ['category', 'status', 'room__block','block', 'floor']
     search_fields = ['name', 'model_number', 'serial_number']
-    list_select_related = ['category', 'room', 'room__block']
-    
+    list_select_related = ['category', 'room', 'room__block', 'floor', 'floor__block', 'block']
+   
     def room_location(self, obj):
-        return f"{obj.room.block.code}{obj.room.number}"
+        if obj.room:
+            return f"{obj.room.block.code}{obj.room.number}"
+        elif obj.floor:
+            return f"Block {obj.floor.block.code} - Floor {obj.floor.number}"
+        elif obj.block:
+            return f"Block {obj.block.code}"
+        return "No Location Assigned"
     room_location.short_description = "Location"
-    room_location.admin_order_field = 'room__number'
+    room_location.admin_order_field = 'name'
+
 
 @admin.register(Generator, site=custom_admin_site)
 class GeneratorAdmin(admin.ModelAdmin):

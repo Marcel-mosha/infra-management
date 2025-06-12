@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 
 class Block(models.Model):
     """Represents the 5 campus blocks (A-E) with their specific configurations"""
@@ -127,7 +128,22 @@ class Equipment(models.Model):
     ]
     
     category = models.ForeignKey(EquipmentCategory, on_delete=models.PROTECT, related_name='equipment')
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='equipment')
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='equipment', null=True, blank=True)
+    floor = models.ForeignKey(
+        Floor,
+        on_delete=models.CASCADE,
+        related_name='equipment',
+        null=True,
+        blank=True,
+        limit_choices_to={'block__code__in': ['A', 'B']}
+    )
+    block = models.ForeignKey(
+        Block,
+        on_delete=models.CASCADE,
+        related_name='equipment',
+        null=True,
+        blank=True
+    )
     name = models.CharField(max_length=100)
     model_number = models.CharField(max_length=50, blank=True, null=True)
     serial_number = models.CharField(max_length=100, blank=True, null=True, unique=True)
@@ -140,6 +156,30 @@ class Equipment(models.Model):
     class Meta:
         verbose_name_plural = "Equipment"
         ordering = ['room', 'name']
+        
+    def clean(self):
+        """Ensure exactly one of room, floor, or block is specified"""
+        location_fields = [self.room, self.floor, self.block]
+        filled_fields = sum(1 for field in location_fields if field is not None)
+        
+        if filled_fields != 1:
+            raise ValidationError("Exactly one of room, floor, or block must be specified.")
+        
+        if self.floor and self.block and self.floor.block != self.block:
+            raise ValidationError("Floor and block must be consistent (floor must belong to the selected block).")
+        
+        if self.room and self.block and self.room.block != self.block:
+            raise ValidationError("Room and block must be consistent (room must belong to the selected block).")
+        
+        if self.room and self.floor and self.room.floor != self.floor:
+            raise ValidationError("Room and floor must be consistent (room must belong to the selected floor).")
+        
+        if self.floor and not self.floor.block.has_multiple_floors:
+            raise ValidationError("Floor can only be specified for blocks with multiple floors (A or B).")
+    
+    def save(self, *args, **kwargs):
+        self.full_clean()  # Run validation before saving
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return f"{self.name}"
