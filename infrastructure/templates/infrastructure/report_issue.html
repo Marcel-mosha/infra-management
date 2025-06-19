@@ -105,16 +105,15 @@
                           name="room"
                           id="id_room"
                           class="form-select"
-                          required
                           disabled
                         >
                           <option value="" selected disabled>
                             Select a Room
                           </option>
                         </select>
-                        <div class="invalid-feedback">
+                        <!-- <div class="invalid-feedback">
                           Please select a room.
-                        </div>
+                        </div> -->
                       </div>
                     </div>
                   </div>
@@ -501,15 +500,59 @@
         // For blocks without floors, load rooms directly
         loadRooms(blockId, null);
       }
+      //loading equipment after the block is selected
+      $.ajax({
+        url: "{% url 'ajax_load_equipment_by_block' %}",
+        data: { block: blockId },
+        success: function (response) {
+          if (response && response.html) {
+            equipmentSelect.html(response.html).prop("disabled", false);
+          } else {
+            equipmentSelect
+              .html(
+                '<option value="" selected disabled>No equipment available</option>'
+              )
+              .prop("disabled", false);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error("Error loading equipment:", error);
+          equipmentSelect.html(
+            '<option value="" selected disabled>Error loading equipment</option>'
+          );
+        },
+      });
     });
 
     // Load rooms when floor is changed
     $("#id_floor").change(function () {
       const blockId = $("#id_block").val();
       const floorId = $(this).val();
-
+      const equipmentSelect = $("#id_equipment");
       if (blockId && floorId) {
         loadRooms(blockId, floorId);
+        //load equipment after selecting floor
+        $.ajax({
+        url: "{% url 'ajax_load_equipment_by_floor' %}",
+        data: { floor: floorId },
+        success: function (response) {
+          if (response && response.html) {
+            equipmentSelect.html(response.html).prop("disabled", false);
+          } else {
+            equipmentSelect
+              .html(
+                '<option value="" selected disabled>No equipment available</option>'
+              )
+              .prop("disabled", false);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error("Error loading equipment:", error);
+          equipmentSelect.html(
+            '<option value="" selected disabled>Error loading equipment</option>'
+          );
+        },
+      });
       } else {
         $("#id_room")
           .html('<option value="" selected disabled>Select a Room</option>')
@@ -562,9 +605,11 @@
     // When equipment is selected, load model and serial numbers
     $("#id_equipment").change(function () {
       const roomId = $("#id_room").val();
+      const blockId = $("#id_block").val();
+      const floorId = $("#id_floor").val();
       const equipmentName = $(this).val();
 
-      if (!roomId || !equipmentName) {
+      if (!equipmentName) {
         $("#id_model_number, #id_serial_number").prop("disabled", true);
         $("#modelNumberContainer, #serialNumberContainer").hide();
         $("#quantityContainer").show();
@@ -575,6 +620,8 @@
         url: "{% url 'ajax_load_equipment_details' %}",
         data: {
           room: roomId,
+          floor: floorId,
+          block: blockId,
           equipment: equipmentName,
         },
         success: function (response) {
@@ -682,11 +729,11 @@
         success: function (response) {
           if (response && response.html) {
             roomSelect.html(response.html).prop("disabled", false);
-            equipmentSelect
-              .html(
-                '<option value="" selected disabled>Select Equipment</option>'
-              )
-              .prop("disabled", true);
+            // equipmentSelect
+            //   .html(
+            //     '<option value="" selected disabled>Select Equipment</option>'
+            //   )
+            //   .prop("disabled", true);
           } else {
             roomSelect
               .html(

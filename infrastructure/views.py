@@ -166,35 +166,83 @@ def ajax_load_equipment(request):
         return JsonResponse({'html': html})
     except Exception as e:
         return JsonResponse({'html': f'<option value="">Error loading equipment</option>'})
-    
-def ajax_load_equipment_details(request):
-    room_id = request.GET.get('room')
-    equipment_name = request.GET.get('equipment')
-    
-    if not room_id or not equipment_name:
-        return JsonResponse({'error': 'Missing parameters'}, status=400)
+
+def ajax_load_equipment_by_block(request):
+    block_id = request.GET.get('block')
+    if not block_id:
+        return JsonResponse({'html': '<option value="">Select Equipment</option>'})
     
     try:
-        # Get all models and serials for this equipment name in the room
-        equipments = Equipment.objects.filter(
-            room_id=room_id,
-            name=equipment_name
-        ).exclude(
+        # Get distinct equipment names in this block
+        equipment_names = Equipment.objects.filter(block_id=block_id)\
+                               .order_by('name')\
+                               .values_list('name', flat=True)\
+                               .distinct()
+        context = {'equipment_names': equipment_names}
+        html = render_to_string('infrastructure/equipment_dropdown_options.html', context)
+        return JsonResponse({'html': html})
+    except Exception as e:
+        return JsonResponse({'html': f'<option value="">Error loading equipment</option>'})
+    
+def ajax_load_equipment_by_floor(request):
+    floor_id = request.GET.get('floor')
+    if  not floor_id:
+        return JsonResponse({'html': '<option value="">Select Equipment</option>'})
+    
+    try:
+        # Get distinct equipment names in this floor
+        equipment_names = Equipment.objects.filter(floor_id=floor_id)\
+                               .order_by('name')\
+                               .values_list('name', flat=True)\
+                               .distinct()
+        context = {'equipment_names': equipment_names}
+        html = render_to_string('infrastructure/equipment_dropdown_options.html', context)
+        return JsonResponse({'html': html})
+    except Exception as e:
+        return JsonResponse({'html': f'<option value="">Error loading equipment</option>'})
+    
+def ajax_load_equipment_details(request):
+    equipment_name = request.GET.get('equipment')
+    room_id = request.GET.get('room')
+    floor_id = request.GET.get('floor')
+    block_id = request.GET.get('block')
+
+    if not equipment_name:
+        return JsonResponse({'error': 'Missing equipment name'}, status=400)
+    
+    if not (room_id or floor_id or block_id):
+        return JsonResponse({'error': 'At least one location filter (room, floor, or block) is required.'}, status=400)
+
+    try:
+        # Start base query with mandatory equipment name
+        queryset = Equipment.objects.filter(name=equipment_name)
+
+        # Apply available location filters
+        if room_id:
+            queryset = queryset.filter(room_id=room_id)
+        elif floor_id:
+            queryset = queryset.filter(floor_id=floor_id)
+        elif block_id:
+            queryset = queryset.filter(block_id=block_id)
+
+        # Exclude incomplete entries
+        queryset = queryset.exclude(
             Q(model_number__isnull=True) | Q(model_number__exact='') |
             Q(serial_number__isnull=True) | Q(serial_number__exact='')
         )
-        
-        models = list(set(e.model_number for e in equipments if e.model_number))
-        serials = list(set(e.serial_number for e in equipments if e.serial_number))
-        
+
+        # Get unique models and serials
+        models = list(set(e.model_number for e in queryset if e.model_number))
+        serials = list(set(e.serial_number for e in queryset if e.serial_number))
+
         context = {
             'models': models,
             'serials': serials
         }
-        
+
         html = render_to_string('infrastructure/ajax_load_equipment_details.html', context)
         return JsonResponse({'html': html})
-        
+
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 

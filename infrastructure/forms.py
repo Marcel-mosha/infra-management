@@ -1,8 +1,8 @@
 from django import forms
 from .models import MaintenanceRequest, Equipment, Room, Block, Floor
+
 class MaintenanceRequestForm(forms.ModelForm):
-    equipment_name = forms.CharField(required=True, widget=forms.HiddenInput())  # Changed to required=True
-    
+    equipment_name = forms.CharField(required=True, widget=forms.HiddenInput())
     
     class Meta:
         model = MaintenanceRequest
@@ -22,27 +22,24 @@ class MaintenanceRequestForm(forms.ModelForm):
         self.fields['model_number'].required = False
         self.fields['serial_number'].required = False
         self.fields['quantity'].required = False
+        self.fields['room'].required = False  # Make room field optional
 
     def clean(self):
         cleaned_data = super().clean()
-        room = cleaned_data.get('room')
+        room = cleaned_data.get('room')  # This could be None now
         equipment_name = cleaned_data.get('equipment_name')
         model_number = cleaned_data.get('model_number')
         serial_number = cleaned_data.get('serial_number')
         quantity = cleaned_data.get('quantity', 1)
 
-        if not room:
-            self.add_error('room', 'Please select a room')
-        
         if not equipment_name:
             self.add_error('equipment_name', 'Please select an equipment')
             return cleaned_data
         
-        # Get base queryset for all matching equipment
-        equipments = Equipment.objects.filter(
-            room=room,
-            name=equipment_name
-        )
+        # Get base queryset for equipment, filtering by room if provided
+        equipments = Equipment.objects.filter(name=equipment_name)
+        if room:
+            equipments = equipments.filter(room=room)
         
         # Case 1: Serial number provided (must be unique)
         if serial_number:
@@ -88,8 +85,3 @@ class MaintenanceRequestForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
-
-class EquipmentForm(forms.ModelForm):
-    class Meta:
-        model = Equipment
-        fields = '__all__'

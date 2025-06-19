@@ -248,7 +248,7 @@ class MaintenanceRequest(models.Model):
         blank=True,
         limit_choices_to={'block__code__in': ['A', 'B']}
     )
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, blank=True, null=True)
     equipment = models.ForeignKey(
         Equipment,
         on_delete=models.SET_NULL,
