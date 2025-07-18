@@ -1,112 +1,200 @@
-/* analytics.css - Only for analytics page */
+/* analytics.css - Styling for the analytics page */
+
+/* Root variables for consistency with admin-custom.css */
+:root {
+    --primary: #4e73df;
+    --secondary: #858796;
+    --success: #1cc88a;
+    --info: #36b9cc;
+    --warning: #f6c23e;
+    --danger: #e74a3b;
+    --light: #f8f9fc;
+    --dark: #5a5c69;
+}
 
 /* Base container styling */
 .analytics-container {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    min-height: calc(100vh - 60px);
+    gap: 2rem;
+    padding: 2rem;
+    min-height: calc(100vh - 80px);
+    background-color: var(--light);
 }
 
 /* Header section */
 .analytics-header {
-    background: white;
-    border-radius: 0.35rem;
-    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fc 100%);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.2rem 2rem rgba(58, 59, 69, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
 }
+
 .header-content {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
 }
+
 .header-text {
     flex: 1;
 }
 
-.back-btn-container {
+.analytics-title {
+    color: var(--dark);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
     display: flex;
-    justify-content: flex-end;
-    margin-top: 0.5rem;
+    align-items: center;
+    gap: 0.5rem;
 }
+
+.analytics-title i {
+    color: var(--primary);
+    font-size: 1.4rem;
+}
+
+.analytics-subtitle {
+    color: var(--secondary);
+    /* font-size unfinished: 1rem; */
+    font-style: italic;
+}
+
+/* Back button */
 .back-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.6rem 1.2rem;
-    background-color: #0a66ff;
-    color: white !important;
-    border-radius: 0.35rem;
+    padding: 0.75rem 1.5rem;
+    background-color: whitesmoke;
+    color: white;
+    border-radius: 0.5rem;
     text-decoration: none;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    box-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.1);
-    border: none;
+    font-weight: 600;
     text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    align-self: flex-start; /* Left-align the button */
-    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.05rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.15);
 }
 
 .back-btn:hover {
-    background-color: #0954d1;
-    transform: translateY(-1px);
-    box-shadow: 0 0.3rem 0.75rem rgba(0, 0, 0, 0.15);
+    background-color: #2e59d9;
+    transform: translateY(-2px);
+    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.2);
 }
 
 .back-btn i {
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
-.analytics-title {
-    color: var(--dark);
-    font-size: 1.5rem;
+/* Priority badge styling */
+.priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.25rem;
+    font-size: 0.85rem;
     font-weight: 600;
-    margin: 0 0 0.25rem 0;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
 }
-.analytics-subtitle {
-    color: var(--secondary);
-    font-size: 0.95rem;
-    margin: 0 0 1rem 0;
+
+/* Priority-specific styling */
+.priority-low {
+    background-color: rgba(54, 185, 204, 0.1); /* Light cyan background */
+    color: #36b9cc;
+    border: 1px solid #36b9cc;
+}
+
+.priority-med {
+    background-color: rgba(28, 200, 138, 0.1); /* Light green background */
+    color: #1cc88a;
+    border: 1px solid #1cc88a;
+}
+
+.priority-high {
+    background-color: rgba(246, 194, 62, 0.1); /* Light yellow background */
+    color: #f6c23e;
+    border: 1px solid #f6c23e;
+}
+
+.priority-crit {
+    background-color: rgba(231, 74, 59, 0.1); /* Light red background */
+    color: #e74a3b;
+    border: 1px solid #e74a3b;
+}
+
+/* Priority icon styling */
+.priority-icon {
+    font-size: 0.8rem;
+}
+
+/* Hover effect for badges */
+.priority-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.1);
 }
 
 /* Chart grid layout */
 .chart-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
 }
 
 /* Chart card styling */
 .chart-card {
     background: white;
-    border-radius: 0.35rem;
-    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-    padding: 1.25rem;
-    transition: all 0.2s ease;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.2rem 2rem rgba(58, 59, 69, 0.1);
+    padding: 1.5rem;
+    transition: all 0.3s ease;
     border: 1px solid rgba(0, 0, 0, 0.05);
+    background: linear-gradient(180deg, #ffffff 0%, #f9f9fb 100%);
 }
 
 .chart-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0.3rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 0.4rem 2.5rem rgba(58, 59, 69, 0.15);
 }
 
 .chart-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .chart-title {
     color: var(--primary);
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 600;
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.chart-title i {
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.chart-info {
+    color: var(--secondary);
+    cursor: help;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.chart-info:hover {
+    color: var(--primary);
 }
 
 /* Full-width charts */
@@ -114,89 +202,88 @@
     grid-column: 1 / -1;
 }
 
-/* Button styling */
-.analytics-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1.2rem;
-    background-color: #0a66ff; /* Same as navbar */
-    color: white !important; /* Force white text */
-    border-radius: 0.35rem;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    font-weight: bold !important; /* Bold text */
-    border: none;
-    box-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.1);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-size: 0.85rem;
-}
-
-.analytics-btn:hover {
-    background-color: #0954d1 !important; /* Slightly darker on hover */
-    color: white !important;
-    transform: translateY(-1px);
-    box-shadow: 0 0.3rem 0.75rem rgba(0, 0, 0, 0.15);
-}
-.analytics-btn i {
-    font-size: 0.9rem;
-    color: white !important;
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
+    .analytics-container {
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+
+    .analytics-header {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .analytics-title {
+        font-size: 1.5rem;
+    }
+
+    .analytics-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .back-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.75rem;
+        font-size: 0.85rem;
+    }
+
     .chart-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
-        /* padding: 0 15px; */
-    }
-    
-    .chart-card {
-        min-width: 120%;
-        margin: 0;
-        padding: 1rem;
-        box-sizing: border-box;
-    }
-    
-    /* Make charts scroll horizontally */
-    .chart-card > div {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    /* Ensure minimum chart width */
-    .chart-card .js-plotly-plot {
-        min-width: 600px; /* Allows horizontal scrolling */
-        height: 400px !important;
-    }
-    
-    .analytics-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-    .header-content {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    .back-btn {
-        align-self: flex-start;
-        margin-top: 1rem;
     }
 
-    .analytics-button-container {
-        padding: 0 15px;
-        margin: 20px 0;
+    .chart-card {
+        padding: 1rem;
+        min-width: 100%;
     }
-    
-    .analytics-button {
-        width: 100%;
-        box-sizing: border-box;
-        margin: 10px 0 30px 0; /* More space below */
-        padding: 12px 0; /* Wider touch target */
-        text-align: center;
-        display: block;
+
+    .chart-card .js-plotly-plot {
+        min-width: 100%;
+        height: 350px !important;
+    }
+
+    .chart-header {
+        margin-bottom: 1rem;
+    }
+
+    .chart-title {
+        font-size: 1.1rem;
+    }
+    .priority-badge {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .priority-icon {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .analytics-title {
+        font-size: 1.3rem;
+    }
+
+    .analytics-subtitle {
+        font-size: 0.8rem;
+    }
+
+    .back-btn {
+        padding: 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .chart-card .js-plotly-plot {
+        height: 300px !important;
+    }
+    .priority-badge {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.4rem;
+    }
+
+    .priority-icon {
+        font-size: 0.7rem;
     }
 }

@@ -107,7 +107,6 @@
 .main-header .navbar-brand {
     display: none !important;
 }
-
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .brand-text {

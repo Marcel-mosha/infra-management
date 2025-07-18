@@ -1,16 +1,68 @@
 {% extends "admin/index.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block extrastyle %}
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'css/admin/analytics.css' %}">
+<link rel="stylesheet" href="{% static 'css/admin/admin-custom.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="analytics-button-container">
-    <a href="analytics/" class="analytics-btn">
+    <a href="{% url 'admin:analytics' %}" class="analytics-btn">
         <i class="fas fa-chart-pie"></i> VIEW DETAILED ANALYTICS
     </a>
+</div>
+
+<!-- Recent Maintenance Requests Section -->
+<div class="module" style="margin-top: 2rem;">
+    <h2><i class="fas fa-tools"></i> {% trans "Recent Maintenance Requests" %}</h2>
+    {% if recent_requests %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>{% trans "Equipment" %}</th>
+                    <th>{% trans "Problem" %}</th>
+                    <th>{% trans "Location" %}</th>
+                    <th>{% trans "Reported By" %}</th>
+                    <th>{% trans "Priority" %}</th>
+                    <th>{% trans "Created At" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in recent_requests %}
+                    <tr>
+                        <td>{{ request.equipment }}</td>
+                        <td>
+                            <a href="{% url 'admin:infrastructure_maintenancerequest_change' request.id %}">
+                                {{ request.problem|truncatechars:50 }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if request.room %}
+                                {{ request.block.code }} Room {{ request.room.number }}
+                            {% else %}
+                                {{ request.block.code }}
+                            {% endif %}
+                        </td>
+                        <td>{{ request.reported_by.username|default:"Unknown" }}</td>
+                        <td>
+                            <span class="priority-badge priority-{{ request.priority|lower }}">
+                                {% if request.priority == 'LOW' %}<i class="fas fa-circle priority-icon"></i>{% endif %}
+                                {% if request.priority == 'MED' %}<i class="fas fa-exclamation-circle priority-icon"></i>{% endif %}
+                                {% if request.priority == 'HIGH' %}<i class="fas fa-exclamation-triangle priority-icon"></i>{% endif %}
+                                {% if request.priority == 'CRIT' %}<i class="fas fa-exclamation-circle priority-icon"></i>{% endif %}
+                                {{ request.priority }}
+                            </span>
+                        </td>
+                        <td>{{ request.created_at|date:"SHORT_DATE_FORMAT" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p><i class="fas fa-info-circle"></i> {% trans "No recent maintenance requests." %}</p>
+    {% endif %}
 </div>
 
 {{ block.super }}

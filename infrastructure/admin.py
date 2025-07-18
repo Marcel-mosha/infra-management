@@ -27,7 +27,12 @@ class CustomAdminSite(AdminSite):
         return custom_urls + urls
 
     def index(self, request, extra_context=None):
-        extra_context = extra_context or {}        
+        extra_context = extra_context or {} 
+        # Query recent maintenance requests (e.g., last 5, ordered by created_at)
+        recent_requests = MaintenanceRequest.objects.select_related(
+            'block', 'room', 'reported_by'
+        ).order_by('-created_at')[:5]
+        extra_context['recent_requests'] = recent_requests       
         return super().index(request, extra_context)
 
     def analytics_view(self, request):

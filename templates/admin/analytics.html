@@ -1,9 +1,9 @@
 {% extends "admin/base_site.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block extrastyle %}
 {{ block.super }}
-<!-- Load your external CSS file -->
+<!-- Load external CSS files -->
 <link rel="stylesheet" href="{% static 'css/admin/admin-custom.css' %}">
 <link rel="stylesheet" href="{% static 'css/admin/analytics.css' %}">
 {% endblock %}
@@ -13,11 +13,11 @@
     <div class="analytics-header">
         <div class="header-content">
             <div class="header-text">
-                <h1 class="analytics-title">Infrastructure Analytics Dashboard</h1>
-                <p class="analytics-subtitle">Comprehensive system performance overview</p>
+                <h1 class="analytics-title"><i class="fas fa-chart-line"></i> {% trans "Infrastructure Analytics Dashboard" %}</h1>
+                <p class="analytics-subtitle">{% trans "Real-time insights into system performance and maintenance trends" %}</p>
             </div>
-            <a href="../" class="back-btn">
-                <i class="fas fa-chevron-left"></i> BACK TO ADMIN
+            <a href="{% url 'admin:index' %}" class="back-btn" title="{% trans 'Return to Admin Dashboard' %}">
+                <i class="fas fa-chevron-left"></i> {% trans "Back to Admin" %}
             </a>
         </div>
     </div>
@@ -26,7 +26,8 @@
         <!-- Status Chart -->
         <div class="chart-card pie-chart">
             <div class="chart-header">
-                <h2 class="chart-title">Request Status Distribution</h2>
+                <h2 class="chart-title"><i class="fas fa-pie-chart"></i> {% trans "Request Status Distribution" %}</h2>
+                <span class="chart-info" title="{% trans 'Shows the distribution of maintenance requests by status' %}"><i class="fas fa-info-circle"></i></span>
             </div>
             {{ status_chart|safe }}
         </div>
@@ -34,7 +35,8 @@
         <!-- Priority Chart -->
         <div class="chart-card bar-chart">
             <div class="chart-header">
-                <h2 class="chart-title">Request Priority Levels</h2>
+                <h2 class="chart-title"><i class="fas fa-bar-chart"></i> {% trans "Request Priority Levels" %}</h2>
+                <span class="chart-info" title="{% trans 'Breakdown of maintenance requests by priority level' %}"><i class="fas fa-info-circle"></i></span>
             </div>
             {{ priority_chart|safe }}
         </div>
@@ -42,7 +44,8 @@
         <!-- Equipment Chart -->
         <div class="chart-card">
             <div class="chart-header">
-                <h2 class="chart-title">Equipment Status</h2>
+                <h2 class="chart-title"><i class="fas fa-tools"></i> {% trans "Equipment Status" %}</h2>
+                <span class="chart-info" title="{% trans 'Equipment status distribution across categories' %}"><i class="fas fa-info-circle"></i></span>
             </div>
             {{ equipment_chart|safe }}
         </div>
@@ -50,16 +53,17 @@
         <!-- Block Chart -->
         <div class="chart-card">
             <div class="chart-header">
-                <h2 class="chart-title">Requests by Block</h2>
+                <h2 class="chart-title"><i class="fas fa-building"></i> {% trans "Requests by Block" %}</h2>
+                <span class="chart-info" title="{% trans 'Maintenance requests grouped by building block' %}"><i class="fas fa-info-circle"></i></span>
             </div>
             {{ block_chart|safe }}
         </div>
         
-        
         <!-- Timeseries Chart (Full Width) -->
         <div class="chart-card chart-full-width line-chart">
             <div class="chart-header">
-                <h2 class="chart-title">Requests Over Time</h2>
+                <h2 class="chart-title"><i class="fas fa-line-chart"></i> {% trans "Requests Over Time" %}</h2>
+                <span class="chart-info" title="{% trans 'Trends in maintenance requests over time' %}"><i class="fas fa-info-circle"></i></span>
             </div>
             {{ timeseries_chart|safe }}
         </div>
